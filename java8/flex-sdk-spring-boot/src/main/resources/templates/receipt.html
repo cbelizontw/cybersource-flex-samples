@@ -8,6 +8,7 @@
     <title>Receipt</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous" />
     <link rel="stylesheet" href="Site.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"/>
 </head>
 
 <body>
@@ -39,6 +40,31 @@
                     </tr>
                 </tbody>
             </table>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-info-sign"></span> Receipt in JSON (development)
+            <a href="/checkout" class="btn btn-default btn-sm pull-right">
+                <span class="glyphicon glyphicon-repeat"></span> Repeat checkout process
+            </a>
+        </div>
+        <div class="panel-body">
+            <p id="paramsInJsonFormat" class="hide" th:text="${postParamsJSON}"/>
+            <p>Copy this text into postman variable called flexPaymentDetails</p>
+            <p id="jsonResultStringfied"></p>
+
+            <script type="application/javascript">
+                let obj = JSON.parse($("#paramsInJsonFormat").text());
+
+                var result = Object.keys(obj).map(e => {
+                    var ret = {"key": e, "value": obj[e]};
+                return ret;
+                });
+
+                let resultStringfied = JSON.stringify(result);
+                $("#jsonResultStringfied").text(resultStringfied);
+            </script>
         </div>
     </div>
 </div>

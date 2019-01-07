@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -67,6 +69,7 @@ public class CheckoutController {
          * model to display data received from cardholder's browser.
          */
         model.addAttribute("postParams", postParams);
+        model.addAttribute("postParamsJSON", new JSONObject(postParams));
         return "receipt";
     }
 
