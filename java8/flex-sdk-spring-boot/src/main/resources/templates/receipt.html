@@ -52,7 +52,7 @@
         <div class="panel-body">
             <p id="paramsInJsonFormat" class="hide" th:text="${postParamsJSON}"/>
             <p>Copy this text into postman variable called flexPaymentDetails</p>
-            <p id="jsonResultStringfied"></p>
+            <p id="jsonParamsStringfied"></p>
 
             <script type="application/javascript">
                 let obj = JSON.parse($("#paramsInJsonFormat").text());
@@ -63,8 +63,20 @@
                 });
 
                 let resultStringfied = JSON.stringify(result);
-                $("#jsonResultStringfied").text(resultStringfied);
+                $("#jsonParamsStringfied").text(resultStringfied);
             </script>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <span class="glyphicon glyphicon-info-sign"></span> Receipt in JSON (development)
+            <a href="/checkout" class="btn btn-default btn-sm pull-right">
+                <span class="glyphicon glyphicon-repeat"></span> Repeat checkout process
+            </a>
+        </div>
+        <div class="panel-body">
+            <p>For development purposes copy this text into postman variable called developmentFlexKey</p>
+            <p id="apiKeyJsonFormat" th:text="${publicKey}"></p>
         </div>
     </div>
 </div>

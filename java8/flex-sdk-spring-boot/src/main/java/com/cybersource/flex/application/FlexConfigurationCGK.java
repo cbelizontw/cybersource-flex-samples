@@ -6,7 +6,8 @@ package com.cybersource.flex.application;
 
 import com.cybersource.flex.sdk.FlexService;
 import com.cybersource.flex.sdk.FlexServiceFactory;
-import com.cybersource.flex.sdk.authentication.CGKCredentials;
+import com.cybersource.flex.sdk.authentication.CyberSourceFlexCredentials;
+import com.cybersource.flex.sdk.authentication.Environment;
 import com.cybersource.flex.sdk.exception.FlexException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +26,7 @@ public class FlexConfigurationCGK {
     @Bean
     public FlexService flexService() {
         try {
-            CGKCredentials cgkCredentials = new CGKCredentials(CGKCredentials.Environment.CAS, mid, keyId, sharedSecret);
+            CyberSourceFlexCredentials cgkCredentials = new CyberSourceFlexCredentials(Environment.TEST, mid, keyId, sharedSecret);
             return FlexServiceFactory.createInstance(cgkCredentials);
         } catch (FlexException flexException) {
             throw new RuntimeException("Error when configuring Flex Server SDK", flexException);

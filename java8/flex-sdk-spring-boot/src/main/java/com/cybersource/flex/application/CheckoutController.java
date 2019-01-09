@@ -7,12 +7,18 @@ package com.cybersource.flex.application;
 import com.cybersource.flex.sdk.FlexService;
 import com.cybersource.flex.sdk.exception.FlexException;
 import com.cybersource.flex.sdk.model.FlexPublicKey;
+import com.cybersource.flex.sdk.model.KeysRequestParameters;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class CheckoutController {
 
+    private static final Logger LOG = LoggerFactory.getLogger(CheckoutController.class);
     @Autowired
     private FlexService flexService;
 
@@ -39,9 +46,15 @@ public class CheckoutController {
     }
 
     @RequestMapping("/checkout")
-    String checkout(final HttpSession session, final Model model) throws FlexException {
+    String checkout(final HttpSession session, final Model model, @RequestParam(required = false) String targetOrigin) throws FlexException {
         // retrieve one time use public RSA key from Flex to facilitate PAN encryption
-        final FlexPublicKey key = flexService.createKey();
+        FlexPublicKey key = null;
+
+        Optional<KeysRequestParameters> parameters = populateKeyRequestParameters(targetOrigin);
+
+        key = parameters.isPresent() ? flexService.createKey(parameters.get()) : flexService.createKey();
+
+
         session.setAttribute("flexPublicKey", key);
 
         // Add JSON Web Keystore to the view model and return rendered "checkout" page
@@ -70,6 +83,7 @@ public class CheckoutController {
          */
         model.addAttribute("postParams", postParams);
         model.addAttribute("postParamsJSON", new JSONObject(postParams));
+        model.addAttribute("publicKey", new JSONObject(key));
         return "receipt";
     }
 
@@ -81,6 +95,16 @@ public class CheckoutController {
         // parameter validation for production deployments.
         parameters.forEach((k, v) -> retVal.put(k, v));
         return retVal;
+    }
+
+    protected Optional<KeysRequestParameters> populateKeyRequestParameters(final String targetOrigin) {
+        KeysRequestParameters keysRequestParameters = null;
+        if(targetOrigin != null) {
+            keysRequestParameters = new KeysRequestParameters();
+            keysRequestParameters.setTargetOrigin(targetOrigin);
+        }
+
+        return Optional.ofNullable(keysRequestParameters);
     }
 
 }
